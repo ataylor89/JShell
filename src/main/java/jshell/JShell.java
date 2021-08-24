@@ -16,8 +16,6 @@ public class JShell {
     }
     
     public void process(String text) {
-        System.out.println(text);
-        System.out.println(text.length());
         String[] words = text.split(" ");
         String firstWord = words[0].toUpperCase();
         try {
@@ -31,7 +29,7 @@ public class JShell {
                     ls();
                     break;
                 case ECHO:
-                    echo(words[1]);
+                    echo(text.substring(5));
             }
         } catch (IllegalArgumentException e) {
             gui.append("Error: unrecognized command\n$ ");
