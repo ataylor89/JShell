@@ -5,10 +5,17 @@
  */
 package jshell;
 
+import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.text.BadLocationException;
+import javax.swing.JColorChooser;
+import javax.swing.JFileChooser;
 
 /**
  *
@@ -17,6 +24,8 @@ import javax.swing.text.BadLocationException;
 public class JShellGUI extends javax.swing.JFrame {
 
     private JShell jShell;
+    private Color backgroundColor, foregroundColor;
+    private JFileChooser fileChooser;
     
     /**
      * Creates new form JShellGUI
@@ -26,6 +35,8 @@ public class JShellGUI extends javax.swing.JFrame {
         initComponents();
         textArea.append("$ ");
         textArea.setCaretPosition(2);
+        colorDialog.setVisible(false);
+        fileChooser = new JFileChooser();
     }
     
     public void append(String text) {
@@ -41,12 +52,84 @@ public class JShellGUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        colorDialog = new javax.swing.JDialog();
+        backgroundColorLabel = new javax.swing.JLabel();
+        foregroundColorLabel = new javax.swing.JLabel();
+        changeBackgroundColorButton = new javax.swing.JButton();
+        changeForegroundColorButton = new javax.swing.JButton();
+        saveButton = new javax.swing.JButton();
         scrollPane = new javax.swing.JScrollPane();
         textArea = new javax.swing.JTextArea();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         Save = new javax.swing.JMenuItem();
+        Open = new javax.swing.JMenuItem();
+        Colors = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
+
+        colorDialog.setPreferredSize(new java.awt.Dimension(500, 400));
+        colorDialog.setSize(new java.awt.Dimension(500, 400));
+
+        backgroundColorLabel.setText("Background color:");
+
+        foregroundColorLabel.setText("Foreground color:");
+
+        changeBackgroundColorButton.setText("Change color");
+        changeBackgroundColorButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                changeBackgroundColorButtonActionPerformed(evt);
+            }
+        });
+
+        changeForegroundColorButton.setText("Change color");
+        changeForegroundColorButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                changeForegroundColorButtonActionPerformed(evt);
+            }
+        });
+
+        saveButton.setText("Save");
+        saveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout colorDialogLayout = new javax.swing.GroupLayout(colorDialog.getContentPane());
+        colorDialog.getContentPane().setLayout(colorDialogLayout);
+        colorDialogLayout.setHorizontalGroup(
+            colorDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(colorDialogLayout.createSequentialGroup()
+                .addGroup(colorDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(colorDialogLayout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addGroup(colorDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(backgroundColorLabel)
+                            .addComponent(foregroundColorLabel))
+                        .addGap(42, 42, 42)
+                        .addGroup(colorDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(changeForegroundColorButton)
+                            .addComponent(changeBackgroundColorButton)))
+                    .addGroup(colorDialogLayout.createSequentialGroup()
+                        .addGap(15, 15, 15)
+                        .addComponent(saveButton)))
+                .addContainerGap(194, Short.MAX_VALUE))
+        );
+        colorDialogLayout.setVerticalGroup(
+            colorDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(colorDialogLayout.createSequentialGroup()
+                .addGap(28, 28, 28)
+                .addGroup(colorDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(backgroundColorLabel)
+                    .addComponent(changeBackgroundColorButton))
+                .addGap(26, 26, 26)
+                .addGroup(colorDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(foregroundColorLabel)
+                    .addComponent(changeForegroundColorButton))
+                .addGap(32, 32, 32)
+                .addComponent(saveButton)
+                .addContainerGap(227, Short.MAX_VALUE))
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -68,7 +151,28 @@ public class JShellGUI extends javax.swing.JFrame {
         fileMenu.setText("File");
 
         Save.setText("Save");
+        Save.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SaveActionPerformed(evt);
+            }
+        });
         fileMenu.add(Save);
+
+        Open.setText("Open");
+        Open.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                OpenActionPerformed(evt);
+            }
+        });
+        fileMenu.add(Open);
+
+        Colors.setText("Colors");
+        Colors.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ColorsActionPerformed(evt);
+            }
+        });
+        fileMenu.add(Colors);
 
         menuBar.add(fileMenu);
 
@@ -105,13 +209,73 @@ public class JShellGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_textAreaKeyTyped
 
+    private void ColorsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ColorsActionPerformed
+        colorDialog.setVisible(true);
+    }//GEN-LAST:event_ColorsActionPerformed
+
+    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
+        textArea.setBackground(backgroundColor);
+        textArea.setForeground(foregroundColor);
+        colorDialog.setVisible(false);
+    }//GEN-LAST:event_saveButtonActionPerformed
+
+    private void changeBackgroundColorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeBackgroundColorButtonActionPerformed
+        Color c = JColorChooser.showDialog(null, "Choose a background color", null);
+        if (c != null)
+            backgroundColor = c;
+    }//GEN-LAST:event_changeBackgroundColorButtonActionPerformed
+
+    private void changeForegroundColorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeForegroundColorButtonActionPerformed
+        Color c = JColorChooser.showDialog(null, "Choose a foreground color", null);
+        if (c != null)
+            foregroundColor = c;
+    }//GEN-LAST:event_changeForegroundColorButtonActionPerformed
+
+    private void SaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveActionPerformed
+        int returnVal = fileChooser.showSaveDialog(this);
+        
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            try {
+                BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
+                String text = textArea.getText();
+                bufferedWriter.write(text);
+                bufferedWriter.close();
+            } catch (IOException ex) {
+                Logger.getLogger(JShellGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_SaveActionPerformed
+
+    private void OpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenActionPerformed
+        int returnVal = fileChooser.showOpenDialog(this);
+        
+        if (returnVal == JFileChooser.APPROVE_OPTION) {       
+            File file = fileChooser.getSelectedFile();
+            try {
+                String text = new String(Files.readAllBytes(file.toPath()));
+                textArea.setText(text);
+            } catch (IOException ex) {
+                Logger.getLogger(JShellGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_OpenActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem Colors;
+    private javax.swing.JMenuItem Open;
     private javax.swing.JMenuItem Save;
+    private javax.swing.JLabel backgroundColorLabel;
+    private javax.swing.JButton changeBackgroundColorButton;
+    private javax.swing.JButton changeForegroundColorButton;
+    private javax.swing.JDialog colorDialog;
     private javax.swing.JMenu fileMenu;
+    private javax.swing.JLabel foregroundColorLabel;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JMenuBar menuBar;
+    private javax.swing.JButton saveButton;
     private javax.swing.JScrollPane scrollPane;
     private javax.swing.JTextArea textArea;
     // End of variables declaration//GEN-END:variables
