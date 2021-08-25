@@ -139,7 +139,7 @@ public class JShellGUI extends javax.swing.JFrame {
         textArea.setColumns(20);
         textArea.setLineWrap(true);
         textArea.setRows(5);
-        textArea.setPreferredSize(new java.awt.Dimension(1000, 800));
+        textArea.setPreferredSize(null);
         textArea.setSize(new java.awt.Dimension(1000, 800));
         textArea.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
